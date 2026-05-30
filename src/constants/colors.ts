@@ -1,0 +1,27 @@
+export const Colors = {
+  background: "#121212",
+  surface: "#1e1e1e",
+  surfaceAlt: "#2a2a2a",
+  border: "#333",
+  primary: "#60a5fa",
+  primaryDark: "#3b82f6",
+  danger: "#ef4444",
+  success: "#22c55e",
+  warning: "#f59e0b",
+  text: "#f1f5f9",
+  textMuted: "#94a3b8",
+  textFaint: "#475569",
+
+  languages: {
+    javascript: "#f7df1e",
+    typescript: "#3178c6",
+    python: "#3572A5",
+    java: "#b07219",
+    cpp: "#f34b7d",
+    html: "#e34c26",
+    css: "#563d7c",
+    json: "#292929",
+    bash: "#89e051",
+    other: "#888",
+  } as Record<string, string>,
+};
