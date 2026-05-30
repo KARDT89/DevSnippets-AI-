@@ -1,56 +1,262 @@
-# Welcome to your Expo app 👋
+# DevSnippets AI
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A cross-platform mobile app for developers to save, organize, search, and manage code snippets — with built-in AI generation and explanation powered by OpenAI and Google Gemini.
 
-## Get started
+Built with **Expo 55**, **React Native**, and **TypeScript**. Everything runs locally — no backend required.
 
-1. Install dependencies
+---
 
-   ```bash
-   npm install
-   ```
+## Features
 
-2. Start the app
+### Snippet Management
+- Create, edit, and delete code snippets with title, language, and tags
+- Search snippets in real-time across title, code content, and tags
+- Filter by programming language (JavaScript, TypeScript, Python, Java, C++, HTML, CSS, JSON, Bash)
+- Mark snippets as favorites for quick access
+- Copy code to clipboard with one tap
+- Share snippets via native share sheet
+- Export snippets as code files (`.js`, `.ts`, `.py`, `.json`, `.txt`)
 
-   ```bash
-   npx expo start
-   ```
+### AI Integration
+- **Generate snippets** — describe what you want in plain English and AI writes the code, picks the language, and suggests tags
+- **Explain snippets** — AI breaks down what the code does, how it works, key concepts, and improvement suggestions
+- Supports **OpenAI GPT-4o-mini** and **Google Gemini 2.0 Flash**
+- API keys stored securely using OS-level encryption (Expo SecureStore)
 
-In the output, you'll find options to open the app in a
+### File Manager
+- Three-folder local storage: Snippets, Templates, Attachments
+- Import files from device via document picker
+- Delete files with confirmation
+- Color-coded folder tabs with file counts and sizes
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### Settings & Appearance
+- Light and dark theme toggle (persisted across sessions)
+- Choose AI provider (OpenAI or Gemini)
+- Add, update, or remove API keys with masked display
+- Storage info panel showing all local storage mechanisms
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+---
 
-## Get a fresh project
+## Tech Stack
 
-When you're ready, run:
+| Category | Technology |
+|---|---|
+| Framework | Expo 55.0.26 |
+| UI | React Native 0.83.6 + React 19.2.0 |
+| Language | TypeScript ~5.9.2 |
+| Navigation | Expo Router ~55.0.16 (file-based) |
+| Local Database | expo-sqlite ~55.0.16 |
+| Preferences | @react-native-async-storage/async-storage |
+| Secure Storage | expo-secure-store ~55.0.14 |
+| File System | expo-file-system ~55.0.22 |
+| Animations | react-native-reanimated 4.2.1 |
+| Gestures | react-native-gesture-handler ~2.30.0 |
+| Icons | @expo/vector-icons (Ionicons) |
+| AI APIs | OpenAI Chat Completions, Google Gemini |
 
-```bash
-npm run reset-project
+---
+
+## Project Structure
+
+```
+src/
+├── app/                        # Expo Router routes
+│   ├── _layout.tsx             # Root layout & app initialization
+│   ├── (tabs)/                 # Bottom tab navigation
+│   │   ├── _layout.tsx         # Tab bar configuration
+│   │   ├── index.tsx           # Snippets home screen
+│   │   ├── favourites.tsx      # Saved/favorited snippets
+│   │   ├── files.tsx           # Local file manager
+│   │   └── settings.tsx        # Settings & preferences
+│   └── snippet/                # Stack screens (overlay tabs)
+│       ├── [id].tsx            # Snippet detail view
+│       └── create.tsx          # Create / edit snippet
+│
+├── components/
+│   ├── SnippetCard.tsx         # Snippet list item with actions
+│   ├── LanguagePicker.tsx      # Language selection modal
+│   └── TagInput.tsx            # Tag input with pill display
+│
+├── services/
+│   ├── aiService.ts            # OpenAI & Gemini API calls
+│   ├── fileService.ts          # File system operations
+│   └── exportService.ts        # Snippet export logic
+│
+├── db/
+│   └── database.ts             # SQLite CRUD operations
+│
+├── storage/
+│   ├── secrets.ts              # Encrypted API key storage
+│   └── preferences.ts          # User preferences helpers
+│
+├── context/
+│   └── ThemeContext.tsx        # Theme state + persistence
+│
+├── constants/
+│   └── colors.ts               # Light & dark color schemes
+│
+└── types/
+    └── index.ts                # Shared TypeScript interfaces
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-### Other setup steps
+## Getting Started
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+### Prerequisites
 
-## Learn more
+- [Node.js](https://nodejs.org/) (v18+)
+- [Expo CLI](https://docs.expo.dev/get-started/installation/) — `npm install -g expo-cli`
+- One of:
+  - **iOS Simulator** (macOS only, requires Xcode)
+  - **Android Emulator** (requires Android Studio)
+  - **Expo Go** app on a physical device
 
-To learn more about developing your project with Expo, look at the following resources:
+### Installation
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+# Clone the repository
+git clone <repo-url>
+cd DevSnippets-AI-
 
-## Join the community
+# Install dependencies
+npm install
 
-Join our community of developers creating universal apps.
+# Start the development server
+npx expo start
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Then in the Expo CLI:
+
+- Press `a` — open Android emulator
+- Press `i` — open iOS simulator
+- Press `w` — open in browser
+- Scan the QR code with Expo Go on your phone
+
+### Other Scripts
+
+```bash
+npm run android      # Launch directly on Android
+npm run ios          # Launch directly on iOS
+npm run web          # Launch in browser
+npm run lint         # Run ESLint
+```
+
+---
+
+## Configuration
+
+### API Keys
+
+No `.env` file is needed. API keys are entered directly in the app's Settings screen and stored using Expo SecureStore (OS-level encrypted storage). They are never written to disk as plaintext.
+
+To add your API key:
+
+1. Open the app and go to the **Settings** tab
+2. Under **AI Provider**, select OpenAI or Gemini
+3. Tap **Add API Key** and paste your key
+4. Start generating and explaining snippets
+
+**Where to get keys:**
+- OpenAI: [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+- Google Gemini: [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
+
+### Preferences (auto-managed)
+
+Stored in AsyncStorage automatically:
+
+| Key | Values | Description |
+|---|---|---|
+| `pref_theme` | `"light"` / `"dark"` | UI theme |
+| `pref_sort_by` | `"createdAt"` / `"title"` / `"language"` | Snippet sort order |
+| `ai_provider` | `"openai"` / `"gemini"` | Active AI provider |
+
+---
+
+## Database Schema
+
+Snippets are stored in a local SQLite database:
+
+```sql
+CREATE TABLE snippets (
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  title         TEXT    NOT NULL,
+  code          TEXT    NOT NULL,
+  language      TEXT    NOT NULL,
+  tags          TEXT    DEFAULT '',       -- comma-separated: "react,hooks,api"
+  isFavorite    INTEGER DEFAULT 0,        -- 0 = false, 1 = true
+  attachmentPath TEXT,
+  createdAt     TEXT    NOT NULL,         -- ISO 8601
+  updatedAt     TEXT    NOT NULL
+);
+```
+
+Available operations: `getAllSnippets`, `getSnippetById`, `searchSnippets`, `getFavoriteSnippets`, `insertSnippet`, `updateSnippet`, `toggleFavorite`, `deleteSnippet`.
+
+---
+
+## Local File Storage
+
+Files are stored under the device's document directory:
+
+```
+DocumentDirectory/DevSnippets/
+├── snippets/       # Exported code files
+├── templates/      # Template files
+└── attachments/    # Files attached to snippets
+```
+
+---
+
+## Navigation Structure
+
+```
+Root (_layout.tsx)
+└── (tabs)  [bottom tab navigator]
+    ├── /           → Snippets list
+    ├── /favourites → Favorited snippets
+    ├── /files      → File manager
+    └── /settings   → Settings
+
+Stack screens (overlay tabs):
+    /snippet/[id]   → Snippet detail
+    /snippet/create → Create / edit snippet
+```
+
+---
+
+## AI Integration Details
+
+### Generate Snippet
+
+Triggered from the Create screen. User writes a plain-English description and the AI returns a JSON object with `title`, `language`, `code`, and `tags` that auto-populate the form.
+
+### Explain Snippet
+
+Triggered from the Detail screen. Sends the code, language, and title to the AI. Returns a structured explanation with four sections: what it does, how it works, key concepts, and suggested improvements.
+
+Both features use `fetch()` directly against the provider's REST API with a temperature of `0.4` for consistent output.
+
+---
+
+## State Management
+
+No Redux or Zustand. The app uses:
+
+- **React Context** — theme (dark/light) shared app-wide via `ThemeContext`
+- **useState / useEffect** — local component state for lists, forms, loading flags, and UI toggles
+- **Direct DB calls** — components call `database.ts` functions directly and update local state optimistically
+
+---
+
+## Supported Languages
+
+JavaScript, TypeScript, Python, Java, C++, HTML, CSS, JSON, Bash, Other
+
+Each language has a distinct color used across cards, pills, and filter chips.
+
+---
+
+## License
+
+MIT
