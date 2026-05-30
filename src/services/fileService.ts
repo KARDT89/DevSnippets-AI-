@@ -54,9 +54,9 @@ export const deleteFile = async (uri: string): Promise<void> => {
   await FileSystem.deleteAsync(uri, { idempotent: true });
 };
 
-// Copy a file
-export const copyFile = async (fromUri: string, toDir: string, name: string): Promise<void> => {
-  await FileSystem.copyAsync({ from: fromUri, to: toDir + name });
+// Replace the existing copyFile with this:
+export const copyFile = async (fromUri: string, toUri: string): Promise<void> => {
+  await FileSystem.copyAsync({ from: fromUri, to: toUri });
 };
 
 // Move a file
@@ -71,3 +71,8 @@ export const formatSize = (bytes: number | null): string => {
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 };
+
+// Getter helpers — used by the Files screen to get directory paths
+export const getSnippetsDir    = () => DIRS.snippets;
+export const getTemplatesDir   = () => DIRS.templates;
+export const getAttachmentsDir = () => DIRS.attachments;

@@ -1,3 +1,5 @@
+// app/_layout.tsx
+
 import { useEffect } from "react";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -6,14 +8,27 @@ import { initFileSystem } from "@/services/fileService";
 import { ThemeProvider, useTheme } from "@/context/ThemeContext";
 
 function RootStack() {
-  const { isDark } = useTheme();
+  const { isDark, colors } = useTheme();
+
   return (
     <>
       <StatusBar style={isDark ? "light" : "dark"} />
-      <Stack screenOptions={{ headerShown: false, animation: "fade" }}>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: isDark ? "#000000" : "#fafafa" },
+          animation: "fade",
+        }}
+      >
         <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="snippet/[id]" options={{ animation: "slide_from_right" }} />
-        <Stack.Screen name="snippet/create" options={{ animation: "slide_from_bottom" }} />
+        <Stack.Screen
+          name="snippet/[id]"
+          options={{ animation: "slide_from_right" }}
+        />
+        <Stack.Screen
+          name="snippet/create"
+          options={{ animation: "slide_from_bottom" }}
+        />
       </Stack>
     </>
   );

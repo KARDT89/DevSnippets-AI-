@@ -1,17 +1,23 @@
+// Replace your entire secrets.ts with this:
+
 import * as SecureStore from "expo-secure-store";
 
 const KEYS = {
-  AI_API_KEY: "ai_api_key",
+  openai: "api_key_openai",
+  gemini: "api_key_gemini",
 };
 
-export const saveApiKey = async (key: string): Promise<void> => {
-  await SecureStore.setItemAsync(KEYS.AI_API_KEY, key);
+export const saveApiKey = async (provider: string, key: string): Promise<void> => {
+  const storeKey = provider === "gemini" ? KEYS.gemini : KEYS.openai;
+  await SecureStore.setItemAsync(storeKey, key);
 };
 
-export const getApiKey = async (): Promise<string | null> => {
-  return await SecureStore.getItemAsync(KEYS.AI_API_KEY);
+export const getApiKey = async (provider: string): Promise<string | null> => {
+  const storeKey = provider === "gemini" ? KEYS.gemini : KEYS.openai;
+  return await SecureStore.getItemAsync(storeKey);
 };
 
-export const deleteApiKey = async (): Promise<void> => {
-  await SecureStore.deleteItemAsync(KEYS.AI_API_KEY);
+export const deleteApiKey = async (provider: string): Promise<void> => {
+  const storeKey = provider === "gemini" ? KEYS.gemini : KEYS.openai;
+  await SecureStore.deleteItemAsync(storeKey);
 };

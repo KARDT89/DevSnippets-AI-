@@ -1,8 +1,11 @@
+// src/components/SnippetCard.tsx
+
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Snippet } from "../types";
-import { Colors } from "../constants/colors";
+import { useTheme } from "../context/ThemeContext";
+import { ColorScheme } from "../constants/colors";
 
 interface Props {
   snippet: Snippet;
@@ -11,107 +14,166 @@ interface Props {
 }
 
 export default function SnippetCard({ snippet, onPress, onToggleFavorite }: Props) {
+  const { colors, isDark } = useTheme();
+  const styles = makeStyles(colors, isDark);
   const tags = snippet.tags ? snippet.tags.split(",").filter(Boolean) : [];
-  const langColor = Colors.languages[snippet.language] ?? Colors.languages.other;
+  const langColor = colors.languages[snippet.language] ?? colors.languages.other;
+  const preview = snippet.code.trim().split("\n").slice(0, 2).join("\n");
 
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.8}>
-      {/* Header row */}
-      <View style={styles.headerRow}>
-        <Text style={styles.title} numberOfLines={1}>{snippet.title}</Text>
-        <TouchableOpacity onPress={onToggleFavorite} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-          <Ionicons
-            name={snippet.isFavorite === 1 ? "heart" : "heart-outline"}
-            size={20}
-            color={snippet.isFavorite === 1 ? Colors.danger : Colors.textMuted}
-          />
-        </TouchableOpacity>
-      </View>
+    <TouchableOpacity
+      style={styles.card}
+      onPress={onPress}
+      activeOpacity={0.75}
+    >
+      {/* Left accent bar — language color */}
+      <View style={[styles.accentBar, { backgroundColor: langColor }]} />
 
-      {/* Code preview */}
-      <Text style={styles.codePreview} numberOfLines={2}>
-        {snippet.code}
-      </Text>
+      <View style={styles.body}>
+        {/* Top row */}
+        <View style={styles.topRow}>
+          <View style={[styles.langPill, { borderColor: langColor + "60", backgroundColor: langColor + "12" }]}>
+            <View style={[styles.langDot, { backgroundColor: langColor }]} />
+            <Text style={[styles.langText, { color: langColor }]}>
+              {snippet.language}
+            </Text>
+          </View>
 
-      {/* Footer row */}
-      <View style={styles.footerRow}>
-        {/* Language badge */}
-        <View style={[styles.langBadge, { backgroundColor: langColor + "22", borderColor: langColor }]}>
-          <Text style={[styles.langText, { color: langColor }]}>{snippet.language}</Text>
+          <TouchableOpacity
+            onPress={onToggleFavorite}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Ionicons
+              name={snippet.isFavorite === 1 ? "bookmark" : "bookmark-outline"}
+              size={17}
+              color={snippet.isFavorite === 1 ? colors.accent : colors.textFaint}
+            />
+          </TouchableOpacity>
         </View>
 
-        {/* Tags */}
-        <View style={styles.tagsRow}>
-          {tags.slice(0, 3).map((tag) => (
-            <View key={tag} style={styles.tag}>
-              <Text style={styles.tagText}>#{tag.trim()}</Text>
-            </View>
-          ))}
+        {/* Title */}
+        <Text style={styles.title} numberOfLines={1}>
+          {snippet.title}
+        </Text>
+
+        {/* Code preview block */}
+        <View style={styles.codeBlock}>
+          <Text style={styles.codeText} numberOfLines={2}>
+            {preview}
+          </Text>
         </View>
+
+        {/* Tags row */}
+        {tags.length > 0 && (
+          <View style={styles.tagsRow}>
+            {tags.slice(0, 3).map((tag) => (
+              <View key={tag} style={styles.tag}>
+                <Text style={styles.tagText}>#{tag.trim()}</Text>
+              </View>
+            ))}
+            {tags.length > 3 && (
+              <Text style={styles.moreText}>+{tags.length - 3}</Text>
+            )}
+          </View>
+        )}
       </View>
     </TouchableOpacity>
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: Colors.surface,
-    borderRadius: 12,
-    padding: 16,
-    marginHorizontal: 16,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: Colors.border,
-  },
-  headerRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  title: {
-    color: Colors.text,
-    fontSize: 16,
-    fontWeight: "600",
-    flex: 1,
-    marginRight: 8,
-  },
-  codePreview: {
-    color: Colors.textMuted,
-    fontSize: 12,
-    fontFamily: "monospace",
-    marginBottom: 12,
-    lineHeight: 18,
-  },
-  footerRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    flexWrap: "wrap",
-  },
-  langBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
-    borderWidth: 1,
-  },
-  langText: {
-    fontSize: 11,
-    fontWeight: "600",
-  },
-  tagsRow: {
-    flexDirection: "row",
-    gap: 6,
-    flexWrap: "wrap",
-  },
-  tag: {
-    backgroundColor: Colors.surfaceAlt,
-    paddingHorizontal: 7,
-    paddingVertical: 3,
-    borderRadius: 6,
-  },
-  tagText: {
-    color: Colors.textFaint,
-    fontSize: 11,
-  },
-});
+const makeStyles = (colors: ColorScheme, isDark: boolean) =>
+  StyleSheet.create({
+    card: {
+      backgroundColor: colors.surface,
+      borderRadius: 16,
+      marginHorizontal: 16,
+      marginBottom: 10,
+      borderWidth: 1,
+      borderColor: colors.border,
+      flexDirection: "row",
+      overflow: "hidden",
+      shadowColor: isDark ? "#000000" : "#000000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: isDark ? 0.4 : 0.06,
+      shadowRadius: 8,
+      elevation: 3,
+    },
+    accentBar: {
+      width: 3,
+      borderTopLeftRadius: 16,
+      borderBottomLeftRadius: 16,
+    },
+    body: {
+      flex: 1,
+      padding: 14,
+      gap: 8,
+    },
+    topRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
+    langPill: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 5,
+      paddingHorizontal: 8,
+      paddingVertical: 3,
+      borderRadius: 20,
+      borderWidth: 1,
+    },
+    langDot: {
+      width: 6,
+      height: 6,
+      borderRadius: 3,
+    },
+    langText: {
+      fontSize: 10,
+      fontWeight: "700",
+      letterSpacing: 0.5,
+      textTransform: "uppercase",
+    },
+    title: {
+      color: colors.text,
+      fontSize: 15,
+      fontWeight: "700",
+      letterSpacing: -0.2,
+    },
+    codeBlock: {
+      backgroundColor: colors.surfaceAlt,
+      borderRadius: 8,
+      padding: 10,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    codeText: {
+      color: colors.textMuted,
+      fontSize: 11,
+      fontFamily: "monospace",
+      lineHeight: 17,
+    },
+    tagsRow: {
+      flexDirection: "row",
+      gap: 6,
+      flexWrap: "wrap",
+      alignItems: "center",
+    },
+    tag: {
+      backgroundColor: colors.surfaceAlt,
+      borderRadius: 6,
+      paddingHorizontal: 7,
+      paddingVertical: 3,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    tagText: {
+      color: colors.textFaint,
+      fontSize: 10,
+      fontWeight: "600",
+    },
+    moreText: {
+      color: colors.textFaint,
+      fontSize: 10,
+      fontWeight: "700",
+    },
+  });

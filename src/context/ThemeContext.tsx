@@ -1,3 +1,5 @@
+// src/context/ThemeContext.tsx
+
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { getTheme, saveTheme } from "../storage/preferences";
 import { DarkColors, LightColors, ColorScheme } from "../constants/colors";
@@ -18,16 +20,19 @@ const ThemeContext = createContext<ThemeContextValue>({
 });
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const [theme, setTheme] = useState<AppPreferences["theme"]>("dark");
+  const [theme, setTheme] = useState<AppPreferences["theme"]>("dark"); // dark first
 
   useEffect(() => {
-    getTheme().then(setTheme);
+    // On mount, load saved preference from AsyncStorage
+    getTheme().then((saved) => {
+      if (saved) setTheme(saved);
+    });
   }, []);
 
   const toggleTheme = async () => {
     const next = theme === "dark" ? "light" : "dark";
     setTheme(next);
-    await saveTheme(next);
+    await saveTheme(next); // persist so it survives app restarts
   };
 
   const colors = theme === "dark" ? DarkColors : LightColors;
